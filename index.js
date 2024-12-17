@@ -64,3 +64,12 @@ function displayRandomMovie(movie) {
         <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
     `;
 }
+
+
+/* Navigation Link Active State */
+document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', (e) => {
+        document.querySelectorAll('.nav-links a').forEach(el => el.classList.remove('active'));
+        e.target.classList.add('active');
+    });
+});
