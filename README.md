@@ -22,3 +22,12 @@ A single-page movie search application that allows users to search for movies, v
    git clone git@github.com:syowai638/phase-1-project.git
 ```
 
+2. Open [index.html] in your browser to use the app.
+
+## API Key
+- This app uses The Movie Database (TMDb) API for fetching movie data. The API key is embedded in the index.js file.
+
+## License
+- This project is licensed under the MIT License.
+
+
