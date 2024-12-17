@@ -2,6 +2,8 @@ const searchButton = document.getElementById('search-button');
 const searchBar = document.getElementById('search-bar');
 const movieResults = document.getElementById('movie-results');
 const genreFilter = document.getElementById('genre-filter');
+const typeFilter = document.getElementById('type-filter');  // **Filtering by movie type**
+const sortFilter = document.getElementById('sort-filter');  // **Sorting by popularity or rating**
 const randomMovieButton = document.getElementById('random-movie');
 const movieDetailModal = document.getElementById('movie-detail-modal');
 const movieDetailModalContent = document.createElement('div');
@@ -14,10 +16,13 @@ const apiKey = "05f1abcfd0b660f430f9ca05b193bed5";
 searchButton.addEventListener('click', async () => {
     const query = searchBar.value; // Get search input
     const genre = genreFilter.value; // Get selected genre
+    const type = typeFilter.value; // Get selected type (movie/TV)
+    const sortBy = sortFilter.value; // Get selected sort option
+
     try {
-        // Fetch movies based on query and genre filter
+        // **Modified API call to include type and sort filters**
         const response = await fetch(
-            `https://api.themoviedb.org/3/search/movie?query=${query}&with_genres=${genre}&api_key=${apiKey}`
+            `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&query=${query}&with_genres=${genre}&with_type=${type}&sort_by=${sortBy}`
         );
         const data = await response.json();
         displayMovies(data.results); // Display fetched movies
@@ -40,6 +45,7 @@ function displayMovies(movies) {
             <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
             <h3>${movie.title}</h3>
             <p>${movie.release_date || 'Release date not available'}</p>
+            <button class="favorite-btn" onclick="toggleFavorite(${movie.id})">Add to Favorites</button>  <!-- **Favorites button** -->
         `;
         movieCard.addEventListener('click', () => showMovieDetails(movie));
         movieResults.appendChild(movieCard);
@@ -88,6 +94,24 @@ function displayRandomMovie(movie) {
         <p>${movie.overview || 'No description available.'}</p>
         <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
     `;
+}
+
+// **Favorites Management Using LocalStorage**
+function toggleFavorite(movieId) {
+    let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+    const movieIndex = favorites.findIndex(movie => movie.id === movieId);
+
+    // **Toggle favorite movie**
+    if (movieIndex === -1) {
+        favorites.push({ id: movieId });
+        alert('Movie added to favorites');
+    } else {
+        favorites.splice(movieIndex, 1);
+        alert('Movie removed from favorites');
+    }
+
+    // **Save favorites to LocalStorage**
+    localStorage.setItem('favorites', JSON.stringify(favorites));
 }
 
 // Highlight active link in navigation
