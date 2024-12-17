@@ -110,8 +110,9 @@ select {
 /* Movie Results */
 .movie-results {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 20px;
+    margin-top: 20px;
 }
 
 .movie-card {
@@ -127,6 +128,13 @@ select {
 .movie-card img {
     width: 100%;
     border-radius: 4px;
+    height: auto;
+    object-fit: cover; /* Ensure the image covers the full space */
+    transition: transform 0.3s ease-in-out; /* Smooth scaling transition */
+}
+
+.movie-card img:hover {
+    transform: scale(1.1); /* Zoom in effect when hovering */
 }
 
 .movie-card h3 {
