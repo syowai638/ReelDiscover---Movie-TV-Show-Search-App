@@ -18,7 +18,6 @@
                 </ul>
             </nav>
         </header>
-        
 
         <div class="search-bar">
             <input type="text" id="search-bar" placeholder="Search for a movie...">
@@ -28,7 +27,6 @@
         <div class="filters">
             <select id="genre-filter">
                 <option value="">All Genres</option>
-                <!-- Add genres as needed -->
                 <option value="28">Action</option>
                 <option value="12">Adventure</option>
                 <option value="16">Animation</option>
@@ -49,6 +47,20 @@
                 <option value="10752">War</option>
                 <option value="37">Western</option>
             </select>
+
+            <!-- Add Dropdown for Movie Type (Movie/TV Show) -->
+            <select id="type-filter">
+                <option value="">All Types</option>
+                <option value="movie">Movies</option>
+                <option value="tv">TV Shows</option>
+            </select>
+
+            <!-- Add Dropdown for Sorting (by Popularity or Rating) -->
+            <select id="sort-filter">
+                <option value="popularity.desc">Sort by Popularity</option>
+                <option value="vote_average.desc">Sort by Rating</option>
+            </select>
+
             <button id="random-movie">Surprise Me!</button>
         </div>
 
