@@ -2,8 +2,8 @@ const searchButton = document.getElementById('search-button');
 const searchBar = document.getElementById('search-bar');
 const movieResults = document.getElementById('movie-results');
 const genreFilter = document.getElementById('genre-filter');
-const typeFilter = document.getElementById('type-filter');  // **Filtering by movie type**
-const sortFilter = document.getElementById('sort-filter');  // **Sorting by popularity or rating**
+const typeFilter = document.getElementById('type-filter');
+const sortFilter = document.getElementById('sort-filter');
 const randomMovieButton = document.getElementById('random-movie');
 const movieDetailModal = document.getElementById('movie-detail-modal');
 const movieDetailModalContent = document.createElement('div');
@@ -12,55 +12,57 @@ movieDetailModal.appendChild(movieDetailModalContent);
 // Your API key
 const apiKey = "05f1abcfd0b660f430f9ca05b193bed5";
 
+// Keep track of the current content type (movie or tv)
+let contentType = 'movie'; // Default to movie
+
 // Event Listener for Search Button
 searchButton.addEventListener('click', async () => {
     const query = searchBar.value; // Get search input
     const genre = genreFilter.value; // Get selected genre
-    const type = typeFilter.value; // Get selected type (movie/TV)
-    const sortBy = sortFilter.value; // Get selected sort option
+    const type = typeFilter.value || contentType; // Get type from filter or use the current type
 
     try {
-        // **Modified API call to include type and sort filters**
+        // Fetch content based on query, genre, type, and sorting
         const response = await fetch(
-            `https://api.themoviedb.org/3/discover/movie?api_key=${apiKey}&query=${query}&with_genres=${genre}&with_type=${type}&sort_by=${sortBy}`
+            `https://api.themoviedb.org/3/search/${type}?query=${query}&with_genres=${genre}&api_key=${apiKey}&sort_by=${sortFilter.value}`
         );
         const data = await response.json();
-        displayMovies(data.results); // Display fetched movies
+        displayMovies(data.results); // Display fetched movies/TV shows
     } catch (error) {
         console.error("Error fetching movies:", error);
     }
 });
 
-// Function to display fetched movies
-function displayMovies(movies) {
+// Function to display fetched movies/TV shows
+function displayMovies(results) {
     movieResults.innerHTML = '';
-    if (movies.length === 0) {
+    if (results.length === 0) {
         movieResults.innerHTML = `<p>No results found. Try another search!</p>`;
         return;
     }
-    movies.forEach(movie => {
-        const movieCard = document.createElement('div');
-        movieCard.classList.add('movie-card');
-        movieCard.innerHTML = `
-            <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
-            <h3>${movie.title}</h3>
-            <p>${movie.release_date || 'Release date not available'}</p>
-            <button class="favorite-btn" onclick="toggleFavorite(${movie.id})">Add to Favorites</button>  <!-- **Favorites button** -->
+
+    results.forEach(result => {
+        const card = document.createElement('div');
+        card.classList.add('movie-card');
+        card.innerHTML = `
+            <img src="https://image.tmdb.org/t/p/w500${result.poster_path}" alt="${result.title || result.name}">
+            <h3>${result.title || result.name}</h3>
+            <p>${result.release_date || result.first_air_date || 'Release date not available'}</p>
         `;
-        movieCard.addEventListener('click', () => showMovieDetails(movie));
-        movieResults.appendChild(movieCard);
+        card.addEventListener('click', () => showMovieDetails(result));
+        movieResults.appendChild(card);
     });
 }
 
-// Function to show detailed movie information in a modal
-async function showMovieDetails(movie) {
+// Function to show detailed movie/TV show information in a modal
+async function showMovieDetails(result) {
     try {
-        const response = await fetch(`https://api.themoviedb.org/3/movie/${movie.id}?api_key=${apiKey}`);
-        const movieDetails = await response.json();
+        const response = await fetch(`https://api.themoviedb.org/3/${contentType}/${result.id}?api_key=${apiKey}`);
+        const details = await response.json();
         movieDetailModalContent.innerHTML = `
-            <h2>${movieDetails.title}</h2>
-            <p>${movieDetails.overview || 'No description available.'}</p>
-            <p>Runtime: ${movieDetails.runtime || 'N/A'} minutes</p>
+            <h2>${details.title || details.name}</h2>
+            <p>${details.overview || 'No description available.'}</p>
+            <p>Runtime: ${details.runtime || 'N/A'} minutes</p>
             <button id="close-modal">Close</button>
         `;
         movieDetailModal.style.display = 'flex';
@@ -70,54 +72,56 @@ async function showMovieDetails(movie) {
             movieDetailModal.style.display = 'none';
         });
     } catch (error) {
-        console.error("Error fetching movie details:", error);
+        console.error("Error fetching details:", error);
     }
 }
 
 // Event Listener for "Surprise Me" button
 randomMovieButton.addEventListener('click', async () => {
     try {
-        const response = await fetch(`https://api.themoviedb.org/3/movie/popular?api_key=${apiKey}`);
+        const response = await fetch(`https://api.themoviedb.org/3/${contentType}/popular?api_key=${apiKey}`);
         const data = await response.json();
-        const randomMovie = data.results[Math.floor(Math.random() * data.results.length)];
-        displayRandomMovie(randomMovie);
+        const randomItem = data.results[Math.floor(Math.random() * data.results.length)];
+        displayRandomMovie(randomItem);
     } catch (error) {
-        console.error("Error fetching random movie:", error);
+        console.error("Error fetching random content:", error);
     }
 });
 
-// Function to display random movie details
-function displayRandomMovie(movie) {
+// Function to display random movie/TV show details
+function displayRandomMovie(item) {
     const randomMovieDetails = document.getElementById('random-movie-details');
     randomMovieDetails.innerHTML = `
-        <h2>${movie.title}</h2>
-        <p>${movie.overview || 'No description available.'}</p>
-        <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
+        <h2>${item.title || item.name}</h2>
+        <p>${item.overview || 'No description available.'}</p>
+        <img src="https://image.tmdb.org/t/p/w500${item.poster_path}" alt="${item.title || item.name}">
     `;
 }
 
-// **Favorites Management Using LocalStorage**
-function toggleFavorite(movieId) {
-    let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-    const movieIndex = favorites.findIndex(movie => movie.id === movieId);
-
-    // **Toggle favorite movie**
-    if (movieIndex === -1) {
-        favorites.push({ id: movieId });
-        alert('Movie added to favorites');
-    } else {
-        favorites.splice(movieIndex, 1);
-        alert('Movie removed from favorites');
-    }
-
-    // **Save favorites to LocalStorage**
-    localStorage.setItem('favorites', JSON.stringify(favorites));
-}
-
-// Highlight active link in navigation
-document.querySelectorAll('.nav-links a').forEach(link => {
-    link.addEventListener('click', (e) => {
-        document.querySelectorAll('.nav-links a').forEach(el => el.classList.remove('active'));
-        e.target.classList.add('active');
-    });
+// Switch between Movies and TV Shows when respective navigation links are clicked
+document.getElementById('movies-link').addEventListener('click', () => {
+    contentType = 'movie'; // Set content type to movie
+    fetchMoviesOrShows();
 });
+
+document.getElementById('tv-shows-link').addEventListener('click', () => {
+    contentType = 'tv'; // Set content type to TV
+    fetchMoviesOrShows();
+});
+
+// Fetch movies or TV shows based on content type
+async function fetchMoviesOrShows() {
+    const query = searchBar.value || '';
+    const genre = genreFilter.value || '';
+    const type = contentType;
+
+    try {
+        const response = await fetch(
+            `https://api.themoviedb.org/3/search/${type}?query=${query}&with_genres=${genre}&api_key=${apiKey}&sort_by=${sortFilter.value}`
+        );
+        const data = await response.json();
+        displayMovies(data.results);
+    } catch (error) {
+        console.error("Error fetching content:", error);
+    }
+}
