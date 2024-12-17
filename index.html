@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Search App</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>ReelDiscover</h1>
+        </header>
+
+        <div class="search-bar">
+            <input type="text" id="search-bar" placeholder="Search for a movie...">
+            <button id="search-button">Search</button>
+        </div>
+
+        <div class="filters">
+            <select id="genre-filter">
+                <option value="">All Genres</option>
+                <!-- Add genres as needed -->
+                <option value="28">Action</option>
+                <option value="35">Comedy</option>
+                <option value="18">Drama</option>
+            </select>
+            <button id="random-movie">Surprise Me!</button>
+        </div>
+
+        <div id="movie-results" class="movie-results"></div>
+
+        <!-- Movie Detail Modal -->
+        <div id="movie-detail-modal" class="movie-detail-modal">
+            <div id="movie-detail-modal-content"></div>
+        </div>
+
+        <div id="random-movie-details" class="random-movie-details"></div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Movie Search App | Built with ❤️ by Syowai Caroline</p>
+    </footer>
+
+    <script src="index.js"></script>
+</body>
+</html>
