@@ -22,7 +22,7 @@ A single-page movie and TV show search application that allows users to search f
 
 1. Clone the repository:
 ```bash
-   git clone git@github.com:syowai638/phase-1-project.git
+   git clone git@github.com:syowai638/ReelDiscover---Movie-TV-Show-Search-App.git
 ```
 
 2. Open [index.html] in your browser to use the app.
