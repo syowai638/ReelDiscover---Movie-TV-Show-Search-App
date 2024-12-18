@@ -1,4 +1,4 @@
-/* General Styles */
+/* General Styles */ 
 body {
     font-family: Arial, sans-serif;
     background-color: #001f3f; /* Dark blue background */
@@ -135,6 +135,7 @@ select {
     cursor: pointer;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
 }
 
 .movie-card img {
@@ -163,6 +164,25 @@ select {
 .movie-card:hover {
     transform: scale(1.05);
     box-shadow: 0 8px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* Favorite button */
+.favorite-btn {
+    background-color: #ff8c00;
+    border: none;
+    color: white;
+    padding: 8px;
+    font-size: 0.9em;
+    cursor: pointer;
+    border-radius: 5px;
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.favorite-btn:hover {
+    background-color: #e07b00;
 }
 
 /* Movie Detail Modal */
@@ -228,4 +248,35 @@ footer {
 
 footer p {
     margin: 0;
+}
+
+/* Show favorites page */
+.favorites-page {
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.favorite-card {
+    width: 200px;
+    margin: 10px;
+    background: #333;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.favorite-card img {
+    width: 100%;
+    border-radius: 4px;
+}
+
+.favorite-card h3 {
+    font-size: 1.2rem;
+    margin: 10px 0;
+    color: #f4f4f9;
+}
+
+.favorite-card p {
+    color: #ccc;
 }
